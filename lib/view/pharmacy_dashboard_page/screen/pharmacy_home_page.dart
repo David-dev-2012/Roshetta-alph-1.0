@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/database/donation_dao.dart';
 import '../../../core/database/medicine_dao.dart';
@@ -6,7 +7,6 @@ import '../../../core/database/order_dao.dart';
 import '../../../core/navigation/app_navigation.dart';
 import '../../../core/resources/color_manager.dart';
 import '../../../core/resources/route_manager.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PharmacyHomePage extends StatefulWidget {
   const PharmacyHomePage({super.key});
@@ -61,8 +61,8 @@ class _PharmacyHomePageState extends State<PharmacyHomePage> {
                           crossAxisCount: 2,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          mainAxisSpacing: 14,
-                          crossAxisSpacing: 14,
+                          mainAxisSpacing: 14.h,
+                          crossAxisSpacing: 14.w,
                           childAspectRatio: 1.5,
                           children: [
                             _StatCard(
@@ -86,12 +86,12 @@ class _PharmacyHomePageState extends State<PharmacyHomePage> {
                           ],
                         ),
                         SizedBox(height: 28.h),
-                        const Text(
+                        Text(
                           'Quick Actions',
                           style: TextStyle(
-                            fontSize: 17,
+                            fontSize: 17.sp,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF1A1D2E),
+                            color: const Color(0xFF1A1D2E),
                           ),
                         ),
                         SizedBox(height: 14.h),
@@ -142,12 +142,12 @@ class _PharmacyHomePageState extends State<PharmacyHomePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
+                            Text(
                               'Recent Orders',
                               style: TextStyle(
-                                fontSize: 17,
+                                fontSize: 17.sp,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF1A1D2E),
+                                color: const Color(0xFF1A1D2E),
                               ),
                             ),
                             TextButton(
@@ -164,9 +164,9 @@ class _PharmacyHomePageState extends State<PharmacyHomePage> {
                         ),
                         SizedBox(height: 8.h),
                         if (_recentOrders.isEmpty)
-                          const Padding(
-                            padding: EdgeInsets.all(24),
-                            child: Center(child: Text('No orders yet', style: TextStyle(color: Color(0xFF8898B3)))),
+                          Padding(
+                            padding: EdgeInsets.all(24.r),
+                            child: Center(child: Text('No orders yet', style: TextStyle(color: const Color(0xFF8898B3)))),
                           )
                         else
                           ..._recentOrders.map((order) => Padding(
@@ -216,16 +216,16 @@ class _PharmacyHeader extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(28),
-          bottomRight: Radius.circular(28),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(28.r),
+          bottomRight: Radius.circular(28.r),
         ),
       ),
       padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + 16,
-        left: 20,
-        right: 20,
-        bottom: 24,
+        top: MediaQuery.of(context).padding.top + 16.h,
+        left: 20.w,
+        right: 20.w,
+        bottom: 24.h,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -235,37 +235,37 @@ class _PharmacyHeader extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () => Navigator.of(context).maybePop(),
-                child: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 22),
+                child: Icon(Icons.arrow_back_ios, color: Colors.white, size: 22.sp),
               ),
               SizedBox(height: 8.h),
-              const Text(
+              Text(
                 'Pharmacy',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.3,
                 ),
               ),
               SizedBox(height: 4.h),
-              const Text(
+              Text(
                 'Manage your pharmacy',
                 style: TextStyle(
                   color: Colors.white70,
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ],
           ),
           Container(
-            width: 42,
-            height: 42,
+            width: 42.w,
+            height: 42.h,
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
-            child: const Icon(Icons.menu_rounded, color: Colors.white, size: 22),
+            child: Icon(Icons.menu_rounded, color: Colors.white, size: 22.sp),
           ),
         ],
       ),
@@ -291,15 +291,15 @@ class _StatCard extends StatelessWidget {
     return Container(
       width: 100.w,
       height: 100.h,
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(10.r),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(18.r),
         boxShadow: [
           BoxShadow(
             color: ColorManager.primary.withValues(alpha: 0.07),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            blurRadius: 12.r,
+            offset: Offset(0, 4.h),
           ),
         ],
       ),
@@ -308,31 +308,31 @@ class _StatCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: 36.w,
+            height: 36.h,
             decoration: BoxDecoration(
               color: ColorManager.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(10.r),
             ),
-            child: Icon(icon, color: ColorManager.primary, size: 20),
+            child: Icon(icon, color: ColorManager.primary, size: 20.sp),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 value,
-                style: const TextStyle(
-                  fontSize: 20,
+                style: TextStyle(
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1A1D2E),
+                  color: const Color(0xFF1A1D2E),
                 ),
               ),
               SizedBox(height: 2.h),
               Text(
                 label,
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: Color(0xFF8898B3),
+                style: TextStyle(
+                  fontSize: 11.sp,
+                  color: const Color(0xFF8898B3),
                   fontWeight: FontWeight.w500,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -364,17 +364,17 @@ class _QuickActionButton extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
           color: filled ? ColorManager.primary : Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
               color: filled
                   ? ColorManager.primary.withValues(alpha: 0.3)
                   : ColorManager.primary.withValues(alpha: 0.07),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              blurRadius: 12.r,
+              offset: Offset(0, 4.h),
             ),
           ],
         ),
@@ -384,7 +384,7 @@ class _QuickActionButton extends StatelessWidget {
             Icon(
               icon,
               color: filled ? Colors.white : ColorManager.primary,
-              size: 26,
+              size: 26.sp,
             ),
             SizedBox(height: 8.h),
             Text(
@@ -392,7 +392,7 @@ class _QuickActionButton extends StatelessWidget {
               style: TextStyle(
                 color: filled ? Colors.white : ColorManager.primary,
                 fontWeight: FontWeight.w700,
-                fontSize: 13,
+                fontSize: 13.sp,
               ),
             ),
           ],
@@ -422,15 +422,15 @@ class _OrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(18.r),
         boxShadow: [
           BoxShadow(
             color: ColorManager.primary.withValues(alpha: 0.07),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            blurRadius: 12.r,
+            offset: Offset(0, 4.h),
           ),
         ],
       ),
@@ -441,17 +441,17 @@ class _OrderCard extends StatelessWidget {
             children: [
               Text(
                 orderId,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w700,
-                  fontSize: 15,
-                  color: Color(0xFF1A1D2E),
+                  fontSize: 15.sp,
+                  color: const Color(0xFF1A1D2E),
                 ),
               ),
               Text(
                 amount,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   color: ColorManager.primary,
                 ),
               ),
@@ -463,23 +463,23 @@ class _OrderCard extends StatelessWidget {
             children: [
               Text(
                 customerName,
-                style: const TextStyle(
-                  color: Color(0xFF8898B3),
-                  fontSize: 13,
+                style: TextStyle(
+                  color: const Color(0xFF8898B3),
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
                   status,
                   style: TextStyle(
                     color: statusColor,
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -491,9 +491,9 @@ class _OrderCard extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(
               '$itemCount items',
-              style: const TextStyle(
-                color: Color(0xFFB0BEC5),
-                fontSize: 12,
+              style: TextStyle(
+                color: const Color(0xFFB0BEC5),
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w500,
               ),
             ),

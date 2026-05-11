@@ -19,4 +19,8 @@ class OrderDao {
   static Future<void> insertOrderItem(Map<String, dynamic> item) async {
     await DatabaseHelper.instance.insert('order_items', item);
   }
+
+  static Future<int> delete(int id) async {
+    return await DatabaseHelper.instance.delete(_table, 'id = ?', [id]);
+  }
 }

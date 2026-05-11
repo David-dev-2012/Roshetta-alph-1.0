@@ -7,20 +7,14 @@ import '../../../core/resources/radius_manager.dart';
 import '../../../core/resources/utils.dart';
 
 class CreatePasswordButton extends StatelessWidget {
-  const CreatePasswordButton({super.key});
+  final VoidCallback? onPressed;
+
+  const CreatePasswordButton({super.key, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      // onTap: () {
-      //   if (_formKey.currentState!.validate()) {
-      //     showDialog(
-      //       context: context,
-      //       barrierDismissible: false,
-      //       // builder: (_) => const SuccessDialog(),
-      //     );
-      //   }
-      // },
+      onTap: onPressed,
       child: Container(
         height: HeightManager.h55,
         width: double.infinity,

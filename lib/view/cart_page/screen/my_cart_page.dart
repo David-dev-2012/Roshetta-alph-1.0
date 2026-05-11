@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
-
-
 import '../../../core/database/cart_dao.dart';
 import '../../../core/database/order_dao.dart';
-import '../../../core/navigation/app_navigation.dart';
 import '../../../core/resources/color_manager.dart';
 import '../../../core/resources/fonts_manager.dart';
 import '../../../core/resources/height_manager.dart';
@@ -12,6 +9,7 @@ import '../../../core/resources/padding_manager.dart';
 import '../../../core/resources/radius_manager.dart';
 import '../../../core/resources/route_manager.dart';
 import '../../../core/resources/utils.dart';
+import '../../../view/login_page/widget/success_dialog.dart';
 import '../../widget/app_bar_widget.dart';
 import '../../widget/normal_title_design.dart';
 import '../widgets/list_view_of_medicines_cart_widget.dart';
@@ -59,7 +57,8 @@ class _CartPageState extends State<CartPage> {
     for (final item in _cartItems) {
       await OrderDao.insertOrderItem({
         'orderId': orderId,
-        'medicineName': item['name'],
+        'name': item['name'],
+        'size': item['size'] ?? '',
         'quantity': item['quantity'] ?? 1,
         'price': item['price'],
       });
@@ -69,11 +68,15 @@ class _CartPageState extends State<CartPage> {
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Order placed successfully!')),
+    showDialog(
+      context: context,
+      builder: (_) => SuccessDialogWidget(
+        titleDialog: Utils.paymentSuccess,
+        desc: 'Your order has been placed successfully!',
+        buttonTitle: Utils.goToHome,
+        route: RoutesName.home,
+      ),
     );
-
-    AppNavigation.pushAndRemoveUntil(context, RoutesName.home);
   }
 
   Future<void> _loadCart() async {

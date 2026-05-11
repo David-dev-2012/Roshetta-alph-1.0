@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:rosheta_ai/view/top_doctor_page/screen/top_doctor_page.dart';
 
 import '../../view/add_medicine_page/screen/add_medicine.dart';
 import '../../view/basket_card_page/sreen/medicine_page.dart';
 import '../../view/cart_page/screen/my_cart_page.dart';
 import '../../view/choose_page/screen/choose_page.dart';
-import '../../view/top_doctor_page/screen/top_doctor_page.dart';
 import '../../view/create_new_password_page/screen/create_new_password_page.dart';
 import '../../view/details_page/screen/details_page.dart';
 import '../../view/doctor_consultation_page/screen/appointment_page.dart';

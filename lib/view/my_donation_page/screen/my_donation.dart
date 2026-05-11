@@ -32,6 +32,10 @@ class _MyDonationsPageState extends State<MyDonationsPage> {
     });
   }
 
+  int get _total => _donations.length;
+  int get _delivered => _donations.where((d) => (d['status'] as String?)?.toLowerCase() == 'delivered').length;
+  int get _pending => _donations.where((d) => (d['status'] as String?)?.toLowerCase() == 'pending').length;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,11 +59,11 @@ class _MyDonationsPageState extends State<MyDonationsPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const _StatItem(value: '12', label: 'Total'),
+                _StatItem(value: '$_total', label: 'Total'),
                 _buildDivider(),
-                const _StatItem(value: '8', label: 'Delivered'),
+                _StatItem(value: '$_delivered', label: 'Delivered'),
                 _buildDivider(),
-                const _StatItem(value: '4', label: 'On the Way'),
+                _StatItem(value: '$_pending', label: 'Pending'),
               ],
             ),
           ),

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/database/order_dao.dart';
 import '../../../core/resources/color_manager.dart';
 
 class IncomingOrder {
+  final int dbId;
   final String orderId;
   final String customerName;
   final String phone;
@@ -12,6 +15,7 @@ class IncomingOrder {
   OrderStatus status;
 
   IncomingOrder({
+    required this.dbId,
     required this.orderId,
     required this.customerName,
     required this.phone,
@@ -20,66 +24,34 @@ class IncomingOrder {
     required this.timeAgo,
     this.status = OrderStatus.pending,
   });
+
+  factory IncomingOrder.fromDb(Map<String, dynamic> row) {
+    return IncomingOrder(
+      dbId: row['id'] as int,
+      orderId: 'Order #${row['id']}',
+      customerName: row['orderNumber'] as String? ?? '#${row['id']}',
+      phone: '',
+      itemCount: row['itemsCount'] as int? ?? 0,
+      amount: '\$${(row['total'] as num?)?.toStringAsFixed(2) ?? '0.00'}',
+      timeAgo: row['createdAt'] as String? ?? '',
+      status: _parseStatus(row['status'] as String? ?? 'Pending'),
+    );
+  }
+
+  static OrderStatus _parseStatus(String s) {
+    switch (s.toLowerCase()) {
+      case 'processing':
+        return OrderStatus.processing;
+      case 'ready':
+      case 'delivered':
+        return OrderStatus.ready;
+      default:
+        return OrderStatus.pending;
+    }
+  }
 }
 
 enum OrderStatus { pending, processing, ready }
-
-final List<IncomingOrder> _allOrders = [
-  IncomingOrder(
-    orderId: 'Order #12345',
-    customerName: 'John Doe',
-    phone: '+1 234-567-8901',
-    itemCount: 3,
-    amount: '\$30.47',
-    timeAgo: '10 mins ago',
-    status: OrderStatus.pending,
-  ),
-  IncomingOrder(
-    orderId: 'Order #12342',
-    customerName: 'Alice Williams',
-    phone: '+1 234-567-8904',
-    itemCount: 1,
-    amount: '\$18.75',
-    timeAgo: '2 hours ago',
-    status: OrderStatus.pending,
-  ),
-  IncomingOrder(
-    orderId: 'Order #12340',
-    customerName: 'Mark Spencer',
-    phone: '+1 234-567-8910',
-    itemCount: 4,
-    amount: '\$55.20',
-    timeAgo: '30 mins ago',
-    status: OrderStatus.processing,
-  ),
-  IncomingOrder(
-    orderId: 'Order #12338',
-    customerName: 'Sara Connor',
-    phone: '+1 234-567-8920',
-    itemCount: 2,
-    amount: '\$22.00',
-    timeAgo: '1 hour ago',
-    status: OrderStatus.processing,
-  ),
-  IncomingOrder(
-    orderId: 'Order #12335',
-    customerName: 'Tom Hanks',
-    phone: '+1 234-567-8930',
-    itemCount: 6,
-    amount: '\$88.99',
-    timeAgo: '3 hours ago',
-    status: OrderStatus.ready,
-  ),
-  IncomingOrder(
-    orderId: 'Order #12330',
-    customerName: 'Emily Rose',
-    phone: '+1 234-567-8940',
-    itemCount: 2,
-    amount: '\$34.50',
-    timeAgo: '5 hours ago',
-    status: OrderStatus.ready,
-  ),
-];
 
 class IncomingOrdersPage extends StatefulWidget {
   const IncomingOrdersPage({super.key});
@@ -90,30 +62,51 @@ class IncomingOrdersPage extends StatefulWidget {
 
 class _IncomingOrdersPageState extends State<IncomingOrdersPage> {
   OrderStatus _selectedTab = OrderStatus.pending;
+  List<IncomingOrder> _allOrders = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOrders();
+  }
+
+  Future<void> _loadOrders() async {
+    final rows = await OrderDao.getAll();
+    if (!mounted) return;
+    setState(() {
+      _allOrders = rows.map((r) => IncomingOrder.fromDb(r)).toList();
+      _isLoading = false;
+    });
+  }
 
   List<IncomingOrder> get _filtered =>
       _allOrders.where((o) => o.status == _selectedTab).toList();
 
-  void _accept(IncomingOrder order) {
+  Future<void> _accept(IncomingOrder order) async {
+    await OrderDao.updateStatus(order.dbId, 'Processing');
     setState(() => order.status = OrderStatus.processing);
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${order.orderId} accepted & moved to Processing'),
         backgroundColor: ColorManager.primary,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
       ),
     );
   }
 
-  void _reject(IncomingOrder order) {
+  Future<void> _reject(IncomingOrder order) async {
+    await OrderDao.delete(order.dbId);
     setState(() => _allOrders.remove(order));
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${order.orderId} rejected'),
         backgroundColor: const Color(0xFFEF4444),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
       ),
     );
   }
@@ -126,29 +119,31 @@ class _IncomingOrdersPageState extends State<IncomingOrdersPage> {
         children: [
           _IncomingHeader(onBack: () => Navigator.maybePop(context)),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 18, 16, 0),
+            padding: EdgeInsets.fromLTRB(16.w, 18.h, 16.w, 0),
             child: _TabBar(
               selected: _selectedTab,
               onChanged: (t) => setState(() => _selectedTab = t),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Expanded(
-            child: _filtered.isEmpty
-                ? _EmptyState(tab: _selectedTab)
-                : ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                    itemCount: _filtered.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 14),
-                    itemBuilder: (context, i) {
-                      final order = _filtered[i];
-                      return _IncomingOrderCard(
-                        order: order,
-                        onAccept: () => _accept(order),
-                        onReject: () => _reject(order),
-                      );
-                    },
-                  ),
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _filtered.isEmpty
+                    ? _EmptyState(tab: _selectedTab)
+                    : ListView.separated(
+                        padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 24.h),
+                        itemCount: _filtered.length,
+                        separatorBuilder: (_, _) => SizedBox(height: 14.h),
+                        itemBuilder: (context, i) {
+                          final order = _filtered[i];
+                          return _IncomingOrderCard(
+                            order: order,
+                            onAccept: () => _accept(order),
+                            onReject: () => _reject(order),
+                          );
+                        },
+                      ),
           ),
         ],
       ),
@@ -170,29 +165,29 @@ class _IncomingHeader extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(28),
-          bottomRight: Radius.circular(28),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(28.r),
+          bottomRight: Radius.circular(28.r),
         ),
       ),
       padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + 16,
-        left: 8,
-        right: 20,
-        bottom: 24,
+        top: MediaQuery.of(context).padding.top + 16.h,
+        left: 8.w,
+        right: 20.w,
+        bottom: 24.h,
       ),
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                color: Colors.white, size: 20),
+            icon: Icon(Icons.arrow_back_ios_new_rounded,
+                color: Colors.white, size: 20.sp),
             onPressed: onBack,
           ),
-          const Text(
+          Text(
             'Incoming Orders',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 20,
+              fontSize: 20.sp,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.3,
             ),
@@ -212,15 +207,15 @@ class _TabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: EdgeInsets.all(4.r),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(30.r),
         boxShadow: [
           BoxShadow(
             color: ColorManager.primary.withValues(alpha: 0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            blurRadius: 12.r,
+            offset: Offset(0, 4.h),
           ),
         ],
       ),
@@ -237,10 +232,10 @@ class _TabBar extends StatelessWidget {
               onTap: () => onChanged(tab),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                padding: EdgeInsets.symmetric(vertical: 10.h),
                 decoration: BoxDecoration(
                   color: active ? ColorManager.primary : Colors.transparent,
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(24.r),
                 ),
                 child: Text(
                   labels[tab]!,
@@ -249,7 +244,7 @@ class _TabBar extends StatelessWidget {
                     color: active ? Colors.white : const Color(0xFF8898B3),
                     fontWeight:
                         active ? FontWeight.w700 : FontWeight.w500,
-                    fontSize: 13,
+                    fontSize: 13.sp,
                   ),
                 ),
               ),
@@ -282,15 +277,15 @@ class _IncomingOrderCard extends StatelessWidget {
     final (badgeLabel, badgeColor) = badgeData[order.status]!;
 
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: EdgeInsets.all(18.r),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
             color: ColorManager.primary.withValues(alpha: 0.07),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
+            blurRadius: 14.r,
+            offset: Offset(0, 4.h),
           ),
         ],
       ),
@@ -302,44 +297,44 @@ class _IncomingOrderCard extends StatelessWidget {
             children: [
               Text(
                 order.orderId,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w800,
-                  fontSize: 15,
-                  color: Color(0xFF1A1D2E),
+                  fontSize: 15.sp,
+                  color: const Color(0xFF1A1D2E),
                 ),
               ),
               Text(
                 order.amount,
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   color: ColorManager.primary,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 order.customerName,
-                style: const TextStyle(
-                  color: Color(0xFF1A1D2E),
-                  fontSize: 13,
+                style: TextStyle(
+                  color: const Color(0xFF1A1D2E),
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
               Row(
                 children: [
-                  const Icon(Icons.access_time_rounded,
-                      size: 13, color: Color(0xFF8898B3)),
-                  const SizedBox(width: 4),
+                  Icon(Icons.access_time_rounded,
+                      size: 13.sp, color: const Color(0xFF8898B3)),
+                  SizedBox(width: 4.w),
                   Text(
                     order.timeAgo,
-                    style: const TextStyle(
-                      color: Color(0xFF8898B3),
-                      fontSize: 12,
+                    style: TextStyle(
+                      color: const Color(0xFF8898B3),
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -347,94 +342,93 @@ class _IncomingOrderCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             order.phone,
-            style: const TextStyle(
-              color: Color(0xFF8898B3),
-              fontSize: 12,
+            style: TextStyle(
+              color: const Color(0xFF8898B3),
+              fontSize: 12.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 '${order.itemCount} items',
-                style: const TextStyle(
-                  color: Color(0xFFB0BEC5),
-                  fontSize: 12,
+                style: TextStyle(
+                  color: const Color(0xFFB0BEC5),
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
                 decoration: BoxDecoration(
                   color: badgeColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Text(
                   badgeLabel,
                   style: TextStyle(
                     color: badgeColor,
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 14),
-          const Divider(color: Color(0xFFF0F4FF), height: 1),
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
+          Divider(color: const Color(0xFFF0F4FF), height: 1.h),
+          SizedBox(height: 14.h),
           Row(
             children: [
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: onAccept,
-                  icon: const Icon(Icons.check_rounded,
-                      size: 16, color: Colors.white),
-                  label: const Text(
+                  icon: Icon(Icons.check_rounded,
+                      size: 16.sp, color: Colors.white),
+                  label: Text(
                     'Accept & Add\nReceiver',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       height: 1.3,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ColorManager.primary,
                     elevation: 0,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16.r),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: onReject,
-                  icon: const Icon(Icons.close_rounded,
-                      size: 16, color: Color(0xFF8898B3)),
-                  label: const Text(
+                  icon: Icon(Icons.close_rounded,
+                      size: 16.sp, color: const Color(0xFF8898B3)),
+                  label: Text(
                     'Reject',
                     style: TextStyle(
-                      color: Color(0xFF8898B3),
+                      color: const Color(0xFF8898B3),
                       fontWeight: FontWeight.w700,
-                      fontSize: 13,
+                      fontSize: 13.sp,
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
                     side: const BorderSide(color: Color(0xFFE2E8F0)),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16.r),
                     ),
                   ),
                 ),
@@ -462,13 +456,13 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.inbox_rounded, size: 64, color: Colors.grey.shade300),
-          const SizedBox(height: 16),
+          Icon(Icons.inbox_rounded, size: 64.sp, color: Colors.grey.shade300),
+          SizedBox(height: 16.h),
           Text(
             labels[tab]!,
-            style: const TextStyle(
-              color: Color(0xFF8898B3),
-              fontSize: 16,
+            style: TextStyle(
+              color: const Color(0xFF8898B3),
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),

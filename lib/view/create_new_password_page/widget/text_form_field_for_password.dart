@@ -8,9 +8,13 @@ class TextFormFieldForPassword extends StatefulWidget {
   const TextFormFieldForPassword({
     super.key,
     this.isConfirmPassword = false,
+    this.controller,
+    this.passController,
   });
 
   final bool isConfirmPassword;
+  final TextEditingController? controller;
+  final TextEditingController? passController;
 
   @override
   State<TextFormFieldForPassword> createState() =>
@@ -23,14 +27,17 @@ class _TextFormFieldForPasswordState extends State<TextFormFieldForPassword> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: widget.controller,
       obscureText: _obscureText,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return widget.isConfirmPassword
-              ? Utils.enterPassword
-              : Utils.enterPassword;
+          return Utils.enterPassword;
         }
-        if (!RegExp(
+        if (widget.isConfirmPassword) {
+          if (value != widget.passController?.text) {
+            return 'Passwords do not match';
+          }
+        } else if (!RegExp(
           r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
         ).hasMatch(value)) {
           return Utils.pleaseEnterAValidPassword;

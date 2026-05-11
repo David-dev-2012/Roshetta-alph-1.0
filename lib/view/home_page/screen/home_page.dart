@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/navigation/app_navigation.dart';
 import '../../../core/resources/assets_values_manager.dart';
 import '../../../core/resources/color_manager.dart';
 import '../../../core/resources/height_manager.dart';
 import '../../../core/resources/padding_manager.dart';
+import '../../../core/resources/route_manager.dart';
 import '../../../core/resources/utils.dart';
 import '../../widget/advertisments_of_app.dart';
 import '../../widget/app_bar_widget.dart';
@@ -59,7 +61,10 @@ class HomePage extends StatelessWidget {
               padding: EdgeInsetsGeometry.symmetric(
                 horizontal: HorizontalPaddingManager.p20,
               ),
-              child: TextTitleOfCategories(title: Utils.doctors),
+              child: TextTitleOfCategories(
+                title: Utils.doctors,
+                onTapSeeAll: () => AppNavigation.pushNamed(context, RoutesName.topDoctor),
+              ),
             ),
             SizedBox(height: HeightManager.h15),
             AdvertismentsOfApp(
@@ -73,12 +78,14 @@ class HomePage extends StatelessWidget {
               padding: EdgeInsetsGeometry.symmetric(
                 horizontal: HorizontalPaddingManager.p20,
               ),
-              child: TextTitleOfCategories(title: Utils.topDoctors),
+              child: TextTitleOfCategories(
+                title: Utils.topDoctors,
+                onTapSeeAll: () => AppNavigation.pushNamed(context, RoutesName.topDoctor),
+              ),
             ),
             SizedBox(height: HeightManager.h15),
             ListViewOfTopDoctorsWidget(),
             ////////////////////////////////////
-            YourDoctorSection(),
           ],
         ),
       ),

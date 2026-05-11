@@ -124,13 +124,48 @@ class ConstValueManager {
 
   /// ================== Medical Categories ==================
   static final List<MedicalItem> medicalItems = [
-    MedicalItem(title: Utils.general, icon: FontAwesomeIcons.stethoscope),
-    MedicalItem(title: Utils.lungs, icon: FontAwesomeIcons.lungs),
-    MedicalItem(title: Utils.dentist, icon: FontAwesomeIcons.tooth),
-    MedicalItem(title: Utils.psychiatrist, icon: FontAwesomeIcons.brain),
-    MedicalItem(title: Utils.covid, icon: FontAwesomeIcons.virus),
-    MedicalItem(title: Utils.surgeon, icon: FontAwesomeIcons.syringe),
-    MedicalItem(title: Utils.cardiologist, icon: FontAwesomeIcons.heartPulse),
+    MedicalItem(
+      title: Utils.general,
+      icon: FontAwesomeIcons.stethoscope,
+      color: Color(0xFF0EA5E9),
+      tips: [Utils.generalTips1, Utils.generalTips2, Utils.generalTips3, Utils.generalTips4],
+    ),
+    MedicalItem(
+      title: Utils.lungs,
+      icon: FontAwesomeIcons.lungs,
+      color: Color(0xFF06B6D4),
+      tips: [Utils.lungsTips1, Utils.lungsTips2, Utils.lungsTips3, Utils.lungsTips4],
+    ),
+    MedicalItem(
+      title: Utils.dentist,
+      icon: FontAwesomeIcons.tooth,
+      color: Color(0xFFF59E0B),
+      tips: [Utils.dentistTips1, Utils.dentistTips2, Utils.dentistTips3, Utils.dentistTips4],
+    ),
+    MedicalItem(
+      title: Utils.psychiatrist,
+      icon: FontAwesomeIcons.brain,
+      color: Color(0xFF8B5CF6),
+      tips: [Utils.psychiatristTips1, Utils.psychiatristTips2, Utils.psychiatristTips3, Utils.psychiatristTips4],
+    ),
+    MedicalItem(
+      title: Utils.covid,
+      icon: FontAwesomeIcons.virus,
+      color: Color(0xFFEF4444),
+      tips: [Utils.covidTips1, Utils.covidTips2, Utils.covidTips3, Utils.covidTips4],
+    ),
+    MedicalItem(
+      title: Utils.surgeon,
+      icon: FontAwesomeIcons.syringe,
+      color: Color(0xFF3B82F6),
+      tips: [Utils.surgeonTips1, Utils.surgeonTips2, Utils.surgeonTips3, Utils.surgeonTips4],
+    ),
+    MedicalItem(
+      title: Utils.cardiologist,
+      icon: FontAwesomeIcons.heartPulse,
+      color: Color(0xFFEC4899),
+      tips: [Utils.cardiologistTips1, Utils.cardiologistTips2, Utils.cardiologistTips3, Utils.cardiologistTips4],
+    ),
   ];
 
   /// ================== Top Doctors ==================

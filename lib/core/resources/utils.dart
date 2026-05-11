@@ -273,4 +273,41 @@ class Utils {
   static const String topDoctors = "Top Doctors";
   static const loginToEnjoy = "Login to enjoy the features we’ve provided,\nand stay healthy!";
   static String paymentSuccessDes = 'Your payment has been successful,\nyou can have a consultation session\nwith your trusted doctor';
+
+  /// ================== Health Tips ==================
+  static const String tips = "Tips";
+  static const String generalTips1 = "Drink at least 8 glasses of water daily";
+  static const String generalTips2 = "Exercise for 30 minutes every day";
+  static const String generalTips3 = "Get 7-8 hours of quality sleep";
+  static const String generalTips4 = "Eat a balanced diet rich in fruits and vegetables";
+
+  static const String lungsTips1 = "Avoid smoking and secondhand smoke";
+  static const String lungsTips2 = "Practice deep breathing exercises daily";
+  static const String lungsTips3 = "Stay active to improve lung capacity";
+  static const String lungsTips4 = "Get regular check-ups for respiratory health";
+
+  static const String dentistTips1 = "Brush your teeth twice a day";
+  static const String dentistTips2 = "Floss daily to remove plaque between teeth";
+  static const String dentistTips3 = "Visit your dentist every 6 months";
+  static const String dentistTips4 = "Limit sugary foods and drinks";
+
+  static const String psychiatristTips1 = "Practice mindfulness and meditation";
+  static const String psychiatristTips2 = "Maintain a consistent sleep schedule";
+  static const String psychiatristTips3 = "Talk to someone you trust about your feelings";
+  static const String psychiatristTips4 = "Take breaks and avoid burnout";
+
+  static const String covidTips1 = "Wash your hands frequently with soap";
+  static const String covidTips2 = "Wear a mask in crowded places";
+  static const String covidTips3 = "Get vaccinated and stay up to date";
+  static const String covidTips4 = "Maintain physical distance when possible";
+
+  static const String surgeonTips1 = "Follow all pre-surgery instructions carefully";
+  static const String surgeonTips2 = "Arrange help for recovery at home";
+  static const String surgeonTips3 = "Keep surgical wounds clean and dry";
+  static const String surgeonTips4 = "Attend all follow-up appointments";
+
+  static const String cardiologistTips1 = "Maintain a heart-healthy low-sodium diet";
+  static const String cardiologistTips2 = "Exercise regularly to strengthen your heart";
+  static const String cardiologistTips3 = "Monitor your blood pressure and cholesterol";
+  static const String cardiologistTips4 = "Avoid stress and practice relaxation techniques";
 }

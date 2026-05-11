@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/database/donation_dao.dart';
 import '../../../core/navigation/app_navigation.dart';
 import '../../../core/resources/color_manager.dart';
 import '../../../core/resources/fonts_manager.dart';
@@ -11,9 +11,46 @@ import '../../../core/resources/route_manager.dart';
 import '../../../core/resources/utils.dart';
 import '../../../core/resources/width_manager.dart';
 
-
-class PharmacyDashboardPage extends StatelessWidget {
+class PharmacyDashboardPage extends StatefulWidget {
   const PharmacyDashboardPage({super.key});
+
+  @override
+  State<PharmacyDashboardPage> createState() => _PharmacyDashboardPageState();
+}
+
+class _PharmacyDashboardPageState extends State<PharmacyDashboardPage> {
+  final _nameController = TextEditingController();
+  final _qtyController = TextEditingController();
+  final _notesController = TextEditingController();
+  String _condition = 'Sealed';
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _qtyController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submitDonation() async {
+    final name = _nameController.text.trim();
+    final qty = _qtyController.text.trim();
+    if (name.isEmpty || qty.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill medicine name and quantity')),
+      );
+      return;
+    }
+
+    await DonationDao.insert({
+      'medicineName': name,
+      'quantity': qty,
+      'status': 'Pending',
+    });
+
+    if (!mounted) return;
+    Navigator.of(context).maybePop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +64,10 @@ class PharmacyDashboardPage extends StatelessWidget {
             Row(
               children: [
                 InkWell(
-                  onTap: () {
-                    Navigator.of(context).maybePop();
-                  },
+                  onTap: () => Navigator.of(context).maybePop(),
                   child: Icon(
-                    CupertinoIcons.back,
-                    size: 40,
+                    Icons.arrow_back_ios,
+                    size: HeightManager.h24,
                     color: ColorManager.blackText,
                   ),
                 ),
@@ -50,16 +85,15 @@ class PharmacyDashboardPage extends StatelessWidget {
                 ),
               ],
             ),
-            /// Icon at top
+            SizedBox(height: HeightManager.h16),
             Center(
               child: Icon(Icons.favorite,
-                  size: HeightManager.h100,
-                  color: ColorManager.primary),
+                  size: HeightManager.h100, color: ColorManager.primary),
             ),
             SizedBox(height: HeightManager.h20),
 
-            /// Medicine Name
             TextFormField(
+              controller: _nameController,
               decoration: InputDecoration(
                 labelText: "Medicine Name",
                 border: OutlineInputBorder(
@@ -69,8 +103,8 @@ class PharmacyDashboardPage extends StatelessWidget {
             ),
             SizedBox(height: HeightManager.h15),
 
-            /// Quantity Available
             TextFormField(
+              controller: _qtyController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: "Quantity Available",
@@ -79,36 +113,30 @@ class PharmacyDashboardPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: HeightManager.h15),
-
-            /// Date
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: "mm/dd/yyyy",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(RadiusValuesManager.r12),
-                ),
-              ),
-            ),
             SizedBox(height: HeightManager.h20),
 
-            /// Condition
-            Text("Condition", style: TextStyle(
-                fontSize: FontSizeManagers.f16, fontWeight: FontWeight.bold)),
+            Text("Condition",
+                style: TextStyle(
+                    fontSize: FontSizeManagers.f16,
+                    fontWeight: FontWeight.bold)),
             SizedBox(height: HeightManager.h10),
             Row(
-              children: [
-                ChoiceChip(label: Text("Sealed"), selected: true),
-                SizedBox(width: WidthManagers.w10),
-                ChoiceChip(label: Text("Opened"), selected: false),
-                SizedBox(width: WidthManagers.w10),
-                ChoiceChip(label: Text("Partial"), selected: false),
-              ],
+              children: ['Sealed', 'Opened', 'Partial'].map((c) {
+                final selected = _condition == c;
+                return Padding(
+                  padding: EdgeInsets.only(right: WidthManagers.w10),
+                  child: ChoiceChip(
+                    label: Text(c),
+                    selected: selected,
+                    onSelected: (v) => setState(() => _condition = c),
+                  ),
+                );
+              }).toList(),
             ),
             SizedBox(height: HeightManager.h20),
 
-            /// Notes
             TextFormField(
+              controller: _notesController,
               maxLines: 3,
               decoration: InputDecoration(
                 labelText: "Additional Notes (Optional)",
@@ -119,17 +147,24 @@ class PharmacyDashboardPage extends StatelessWidget {
             ),
             SizedBox(height: HeightManager.h25),
 
-            /// Browse Donated Medicines Card
-            Card(
-              child: ListTile(
-                leading: Icon(Icons.medication, color: ColorManager.primary),
-                title: Text("Browse Donated Medicines"),
-                subtitle: Text("See medicines available from other donations"),
+            SizedBox(
+              width: double.infinity,
+              height: HeightManager.h50,
+              child: ElevatedButton(
+                onPressed: _submitDonation,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: ColorManager.primary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(RadiusValuesManager.r12),
+                  ),
+                ),
+                child: Text('Submit Donation',
+                    style: TextStyle(
+                        fontSize: FontSizeManagers.f16, color: ColorManager.white)),
               ),
             ),
-            SizedBox(height: HeightManager.h15),
+            SizedBox(height: HeightManager.h20),
 
-            /// Earn Efforts Card
             Card(
               child: ListTile(
                 leading: Icon(Icons.card_giftcard, color: ColorManager.primary),
@@ -137,29 +172,6 @@ class PharmacyDashboardPage extends StatelessWidget {
                 subtitle: Text("Add new medicine to inventory"),
                 onTap: () => AppNavigation.pushNamed(context, RoutesName.addMedicine),
               ),
-            ),
-            SizedBox(height: HeightManager.h25),
-
-            /// Stats
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Column(children: [
-                  Text("200k+", style: TextStyle(
-                      fontSize: FontSizeManagers.f18, fontWeight: FontWeight.bold)),
-                  Text("Donors"),
-                ]),
-                Column(children: [
-                  Text("8.5k+", style: TextStyle(
-                      fontSize: FontSizeManagers.f18, fontWeight: FontWeight.bold)),
-                  Text("Medicines"),
-                ]),
-                Column(children: [
-                  Text("10k+", style: TextStyle(
-                      fontSize: FontSizeManagers.f18, fontWeight: FontWeight.bold)),
-                  Text("Helped"),
-                ]),
-              ],
             ),
           ],
         ),

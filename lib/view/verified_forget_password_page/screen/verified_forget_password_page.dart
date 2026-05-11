@@ -99,9 +99,11 @@ class _ForgetPasswordState extends State<VerifiedForgetPasswordPage> {
                 InkWell(
                   onTap: () {
                     if (_formKey.currentState!.validate()) {
+                      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
                       AppNavigation.pushAndRemoveUntil(
                         context,
                         RoutesName.createNewPassword,
+                        args: {'email': args?['email']},
                       );
                     }
                   },

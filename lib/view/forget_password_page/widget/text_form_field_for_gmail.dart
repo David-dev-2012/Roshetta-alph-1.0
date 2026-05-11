@@ -5,13 +5,17 @@ import '../../../core/resources/utils.dart';
 import '../../../core/resources/width_manager.dart';
 
 class TextFormFieldForGmail extends StatelessWidget {
+  final TextEditingController? controller;
+
   const TextFormFieldForGmail({
     super.key,
+    this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return Utils.enterEmail;

@@ -4,30 +4,21 @@ import '../../../core/resources/color_manager.dart';
 import '../../../core/resources/fonts_manager.dart';
 import '../../../core/resources/height_manager.dart';
 import '../../../core/resources/radius_manager.dart';
-import '../../../core/navigation/app_navigation.dart';
-import '../../../core/resources/route_manager.dart';
 import '../../../core/resources/utils.dart';
 
 
 class ResetPasswordButton extends StatelessWidget {
+  final VoidCallback? onPressed;
+
   const ResetPasswordButton({
     super.key,
-    required this.formKey,
+    this.onPressed,
   });
-
-  final GlobalKey<FormState> formKey;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        if (formKey.currentState!.validate()) {
-          AppNavigation.pushNamed(
-            context,
-            RoutesName.verifiedForgetPassword,
-          );
-        }
-      },
+      onTap: onPressed,
       child: Container(
         height: HeightManager.h55,
         width: double.infinity,

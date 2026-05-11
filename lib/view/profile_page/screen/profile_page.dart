@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../core/navigation/app_navigation.dart';
 import '../../../core/resources/color_manager.dart';
 import '../../../core/resources/route_manager.dart';
 import '../../../core/session/session_manager.dart';
 
-
-// Profile page for the user account view
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
@@ -17,126 +16,99 @@ class ProfilePage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // ── Header section with teal gradient ──────────────────────────
             Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: ColorManager.primary,
                 borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(32),
-                  bottomRight: Radius.circular(32),
+                  bottomLeft: Radius.circular(32.r),
+                  bottomRight: Radius.circular(32.r),
                 ),
               ),
               padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top + 20,
-                bottom: 24,
-                left: 20,
-                right: 20,
+                top: MediaQuery.of(context).padding.top + 20.h,
+                bottom: 24.h,
+                left: 20.w,
+                right: 20.w,
               ),
               child: Column(
                 children: [
-                  // Three-dot menu aligned to the right
-                  const Align(
+                  Align(
                     alignment: Alignment.centerRight,
-                    child: Icon(Icons.more_horiz, color: Colors.white),
+                    child: Icon(Icons.more_horiz, color: Colors.white, size: 24.sp),
                   ),
-                  const SizedBox(height: 8),
-
-                  // Avatar circle
+                  SizedBox(height: 8.h),
                   Container(
-                    width: 90,
-                    height: 90,
+                    width: 90.w,
+                    height: 90.h,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 3),
+                      border: Border.all(color: Colors.white, width: 3.w),
                       color: ColorManager.backGround1,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.person,
-                      size: 48,
+                      size: 48.sp,
                       color: ColorManager.primary,
                     ),
                   ),
-                  const SizedBox(height: 12),
-
-                  // User name
+                  SizedBox(height: 12.h),
                   Text(
                     SessionManager.instance.fullName ?? 'User',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
-                      fontSize: 22,
+                      fontSize: 22.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 16),
-
-                  // Stats row: Posts | Saved | Km Away
+                  SizedBox(height: 16.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _StatItem(value: '27', label: 'Posts'),
-                      Container(width: 1, height: 40, color: Colors.white30),
+                      Container(width: 1.w, height: 40.h, color: Colors.white30),
                       _StatItem(value: '5', label: 'Saved'),
-                      Container(width: 1, height: 40, color: Colors.white30),
+                      Container(width: 1.w, height: 40.h, color: Colors.white30),
                       _StatItem(value: '2.5km', label: 'km Away'),
                     ],
                   ),
                 ],
               ),
             ),
-
-            const SizedBox(height: 24),
-
-            // ── Menu items card ────────────────────────────────────────────
+            SizedBox(height: 24.h),
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
+              margin: EdgeInsets.symmetric(horizontal: 20.w),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20.r),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 15,
-                    offset: const Offset(0, 5),
+                    blurRadius: 15.r,
+                    offset: Offset(0, 5.h),
                   ),
                 ],
               ),
               child: Column(
                 children: [
-                  // My Orders — navigates to orders page
                   _MenuItem(
                     icon: Icons.shopping_bag_outlined,
                     label: 'My Orders',
-                    onTap: () => AppNavigation.pushNamed(
-                      context,
-                      RoutesName.myOrders,
-                    ),
+                    onTap: () => AppNavigation.pushNamed(context, RoutesName.myOrders),
                   ),
-                  const Divider(height: 1, indent: 20, endIndent: 20),
-
-                  // My Donations — navigates to donation page
+                  Divider(height: 1.h, indent: 20.w, endIndent: 20.w),
                   _MenuItem(
                     icon: Icons.volunteer_activism_outlined,
                     label: 'My Donations',
-                    onTap: () => AppNavigation.pushNamed(
-                      context,
-                      RoutesName.myDonations,
-                    ),
+                    onTap: () => AppNavigation.pushNamed(context, RoutesName.myDonations),
                   ),
-                  const Divider(height: 1, indent: 20, endIndent: 20),
-
-                  // Reward Points — navigates to rewards page
+                  Divider(height: 1.h, indent: 20.w, endIndent: 20.w),
                   _MenuItem(
                     icon: Icons.military_tech_outlined,
                     label: 'Reward Points',
-                    onTap: () => AppNavigation.pushNamed(
-                      context,
-                      RoutesName.rewards,
-                    ),
+                    onTap: () => AppNavigation.pushNamed(context, RoutesName.rewards),
                   ),
-                  const Divider(height: 1, indent: 20, endIndent: 20),
-
-                  // Payment Method
+                  Divider(height: 1.h, indent: 20.w, endIndent: 20.w),
                   _MenuItem(
                     icon: Icons.credit_card_outlined,
                     label: 'Payment Method',
@@ -144,9 +116,7 @@ class ProfilePage extends StatelessWidget {
                       const SnackBar(content: Text('Payment Method - Coming soon!')),
                     ),
                   ),
-                  const Divider(height: 1, indent: 20, endIndent: 20),
-
-                  // FAQs
+                  Divider(height: 1.h, indent: 20.w, endIndent: 20.w),
                   _MenuItem(
                     icon: Icons.help_outline,
                     label: 'FAQs',
@@ -154,9 +124,7 @@ class ProfilePage extends StatelessWidget {
                       const SnackBar(content: Text('FAQs - Coming soon!')),
                     ),
                   ),
-                  const Divider(height: 1, indent: 20, endIndent: 20),
-
-                  // Log Out — shows confirmation dialog before logging out
+                  Divider(height: 1.h, indent: 20.w, endIndent: 20.w),
                   _MenuItem(
                     icon: Icons.logout,
                     label: 'Log Out',
@@ -167,38 +135,36 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             ),
-
-            const SizedBox(height: 30),
+            SizedBox(height: 30.h),
           ],
         ),
       ),
     );
   }
 
-  // Logout confirmation dialog
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.r),
               decoration: BoxDecoration(
                 color: ColorManager.backGround1,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16.r),
               ),
-              child: const Icon(Icons.logout, color: ColorManager.primary, size: 32),
+              child: Icon(Icons.logout, color: ColorManager.primary, size: 32.sp),
             ),
-            const SizedBox(height: 16),
-            const Text(
+            SizedBox(height: 16.h),
+            Text(
               'Are you sure to log out of your account?',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -210,21 +176,21 @@ class ProfilePage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ColorManager.primary,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: EdgeInsets.symmetric(vertical: 14.h),
                 ),
-                child: const Text(
+                child: Text(
                   'Log Out',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15.sp),
                 ),
               ),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text(
+              child: Text(
                 'Cancel',
-                style: TextStyle(color: ColorManager.primary, fontWeight: FontWeight.w600),
+                style: TextStyle(color: ColorManager.primary, fontWeight: FontWeight.w600, fontSize: 15.sp),
               ),
             ),
           ],
@@ -233,8 +199,6 @@ class ProfilePage extends StatelessWidget {
     );
   }
 }
-
-// ── Helper Widgets ──────────────────────────────────────────────────────────
 
 class _StatItem extends StatelessWidget {
   final String value;
@@ -247,16 +211,16 @@ class _StatItem extends StatelessWidget {
       children: [
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
-            fontSize: 20,
+            fontSize: 20.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4.h),
         Text(
           label,
-          style: const TextStyle(color: Colors.white70, fontSize: 13),
+          style: TextStyle(color: Colors.white70, fontSize: 13.sp),
         ),
       ],
     );
@@ -283,27 +247,27 @@ class _MenuItem extends StatelessWidget {
     final color = iconColor ?? ColorManager.primary;
     return ListTile(
       onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
       leading: Container(
-        width: 40,
-        height: 40,
+        width: 40.w,
+        height: 40.h,
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
         ),
-        child: Icon(icon, color: color, size: 20),
+        child: Icon(icon, color: color, size: 20.sp),
       ),
       title: Text(
         label,
         style: TextStyle(
           fontWeight: FontWeight.w500,
           color: textColor ?? const Color(0xFF1E293B),
-          fontSize: 15,
+          fontSize: 15.sp,
         ),
       ),
       trailing: Icon(
         Icons.arrow_forward_ios_rounded,
-        size: 14,
+        size: 14.sp,
         color: Colors.grey.shade400,
       ),
     );

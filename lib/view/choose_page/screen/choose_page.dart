@@ -24,51 +24,53 @@ class ChoosePage extends StatelessWidget {
             colors: [ColorManager.backGround1, ColorManager.lightPrimary],
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Image.asset(
-              AssetsValuesManager.logo,
-              height: HeightManager.h300,
-              width: WidthManagers.w255,
-            ),
-            ContinueAsWidget(
-              choice: Utils.user,
-              description: Utils.browseAndOrderMedicines,
-              icon: Icons.people,
-              onTap: () {
-                AppNavigation.pushNamed(context, RoutesName.home);
-              },
-            ),
-            SizedBox(height: HeightManager.h20),
-            ContinueAsWidget(
-              choice: Utils.pharmacy,
-              description: Utils.manageYourPharmacy,
-              icon: Icons.apartment,
-              onTap: () {
-                AppNavigation.pushNamed(context, RoutesName.pharmacyHome);
-
-                // showModalBottomSheet(
-                //   context: context,
-                //   isDismissible: false,
-                //   builder: (context) => SizedBox(
-                //     width: double.infinity,
-                //     child: Column(
-                //       children: [
-                //         ElevatedButton(
-                //           onPressed: () {
-                //             Navigator.pop(context);
-                //           },
-                //           child: Text("back"),
-                //         ),
-                //         Text("Adsf"),
-                //       ],
-                //     ),
-                //   ),
-                // );
-              },
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Image.asset(
+                AssetsValuesManager.logo,
+                height: HeightManager.h300,
+                width: WidthManagers.w255,
+              ),
+              ContinueAsWidget(
+                choice: Utils.user,
+                description: Utils.browseAndOrderMedicines,
+                icon: Icons.people,
+                onTap: () {
+                  AppNavigation.pushNamed(context, RoutesName.home);
+                },
+              ),
+              SizedBox(height: HeightManager.h20),
+              ContinueAsWidget(
+                choice: Utils.pharmacy,
+                description: Utils.manageYourPharmacy,
+                icon: Icons.apartment,
+                onTap: () {
+                  AppNavigation.pushNamed(context, RoutesName.pharmacyHome);
+          
+                  // showModalBottomSheet(
+                  //   context: context,
+                  //   isDismissible: false,
+                  //   builder: (context) => SizedBox(
+                  //     width: double.infinity,
+                  //     child: Column(
+                  //       children: [
+                  //         ElevatedButton(
+                  //           onPressed: () {
+                  //             Navigator.pop(context);
+                  //           },
+                  //           child: Text("back"),
+                  //         ),
+                  //         Text("Adsf"),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

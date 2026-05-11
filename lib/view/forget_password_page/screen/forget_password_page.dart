@@ -1,15 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/navigation/app_navigation.dart';
 import '../../../core/resources/color_manager.dart';
 import '../../../core/resources/fonts_manager.dart';
 import '../../../core/resources/height_manager.dart';
 import '../../../core/resources/padding_manager.dart';
+import '../../../core/resources/route_manager.dart';
 import '../../../core/resources/utils.dart';
 import '../widget/forget_password_text_field.dart';
 import '../widget/forget_password_toggle.dart';
 import '../widget/reset_password_button.dart';
-
 
 class ForgetPasswordPage extends StatefulWidget {
   const ForgetPasswordPage({super.key});
@@ -20,7 +20,23 @@ class ForgetPasswordPage extends StatefulWidget {
 
 class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
   final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
   bool _isEmailSelected = true;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    if (!_formKey.currentState!.validate()) return;
+    AppNavigation.pushNamed(
+      context,
+      RoutesName.verifiedForgetPassword,
+      args: {'email': _emailController.text.trim()},
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +56,11 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                 /// Back Icon
                 InkWell(
                   onTap: () => Navigator.pop(context),
-                  child: Icon(
-                    CupertinoIcons.back,
-                    size: 24,
-                    color: ColorManager.blackText,
-                  ),
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      size: 24,
+                      color: ColorManager.blackText,
+                    ),
                 ),
 
                 SizedBox(height: HeightManager.h24),
@@ -88,12 +104,13 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                 /// TextField
                 ForgetPasswordTextField(
                   isEmailSelected: _isEmailSelected,
+                  emailController: _emailController,
                 ),
 
                 SizedBox(height: HeightManager.h32),
 
                 /// Button
-                ResetPasswordButton(formKey: _formKey),
+                ResetPasswordButton(onPressed: _submit),
 
                 SizedBox(height: HeightManager.h15),
               ],

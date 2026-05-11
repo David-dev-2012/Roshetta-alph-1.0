@@ -22,4 +22,13 @@ class UserDao {
         .getWhere(_table, 'email = ?', [email]);
     return users.isNotEmpty ? users.first : null;
   }
+
+  static Future<int> updatePassword(String email, String newPassword) async {
+    return await DatabaseHelper.instance.update(
+      _table,
+      {'password': newPassword},
+      'email = ?',
+      [email],
+    );
+  }
 }

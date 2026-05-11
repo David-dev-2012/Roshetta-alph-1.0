@@ -10,14 +10,16 @@ class ForgetPasswordTextField extends StatelessWidget {
   const ForgetPasswordTextField({
     super.key,
     required this.isEmailSelected,
+    this.emailController,
   });
 
   final bool isEmailSelected;
+  final TextEditingController? emailController;
 
   @override
   Widget build(BuildContext context) {
     if (isEmailSelected) {
-      return const TextFormFieldForGmail();
+      return TextFormFieldForGmail(controller: emailController);
     }
 
     return TextFormField(
